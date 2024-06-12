@@ -73,7 +73,15 @@ const Form = () => {
   const handleContactNumberChange = (e) => {
     const { value } = e.target;
     if (/^\d*$/.test(value)) {
-      setContactNumber(value);
+      if (value.length <= 10) {
+        setContactNumber(value);
+        setErrors((prevErrors) => ({ ...prevErrors, contactNumber: null }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          contactNumber: "Contact number must be exactly 10 digits",
+        }));
+      }
     }
   };
 
@@ -81,19 +89,35 @@ const Form = () => {
     let errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!name) errors.name = "Name is required";
-    if (!orgName) errors.orgName = "Organization name is required";
+    if (!name) {
+      errors.name = "Name is required";
+    } else if (name.length <= 5) {
+      errors.name = "Name must be greater than 5 characters";
+    }
+
+    if (!orgName) {
+      errors.orgName = "Organization name is required";
+    } else if (orgName.length <= 5) {
+      errors.orgName = "Organization name must be greater than 5 characters";
+    }
+
     if (!emailID) {
       errors.emailID = "Email ID is required";
     } else if (!emailRegex.test(emailID)) {
       errors.emailID = "Invalid email format";
     }
+
     if (!contactNumber) {
       errors.contactNumber = "Contact number is required";
     } else if (contactNumber.length !== 10) {
       errors.contactNumber = "Contact number must be exactly 10 digits";
     }
-    if (!message) errors.message = "Message is required";
+
+    if (!message) {
+      errors.message = "Message is required";
+    } else if (message.length <= 5) {
+      errors.message = "Message must be greater than 5 characters";
+    }
 
     return errors;
   };
