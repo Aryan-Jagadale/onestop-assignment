@@ -70,13 +70,29 @@ const Form = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
 
+  const handleContactNumberChange = (e) => {
+    const { value } = e.target;
+    if (/^\d*$/.test(value)) {
+      setContactNumber(value);
+    }
+  };
+
   const validate = () => {
     let errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!name) errors.name = "Name is required";
     if (!orgName) errors.orgName = "Organization name is required";
-    if (!emailID) errors.emailID = "Email ID is required";
-    if (!contactNumber) errors.contactNumber = "Contact number is required";
+    if (!emailID) {
+      errors.emailID = "Email ID is required";
+    } else if (!emailRegex.test(emailID)) {
+      errors.emailID = "Invalid email format";
+    }
+    if (!contactNumber) {
+      errors.contactNumber = "Contact number is required";
+    } else if (contactNumber.length !== 10) {
+      errors.contactNumber = "Contact number must be exactly 10 digits";
+    }
     if (!message) errors.message = "Message is required";
 
     return errors;
@@ -136,7 +152,7 @@ const Form = () => {
         <Input
           type={"text"}
           value={contactNumber}
-          onChange={(e) => setContactNumber(e.target.value)}
+          onChange={handleContactNumberChange}
           placeholder={"Contact Number"}
           error={errors.contactNumber}
         />
